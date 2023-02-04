@@ -1,5 +1,8 @@
 import Ship from "./ship";
 
+export const GAMEBOARD_WIDTH = 10;
+export const GAMEBOARD_LENGTH = 10;
+
 export default class Gameboard {
   ships = [];
   missedAttacks = [];

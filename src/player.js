@@ -1,4 +1,4 @@
-import Gameboard from "./gameboard";
+import Gameboard, { GAMEBOARD_LENGTH, GAMEBOARD_WIDTH } from "./gameboard";
 
 export class Player {
   constructor(name) {
@@ -15,8 +15,8 @@ export class ComputerPlayer extends Player {
 
   _setInitiallLegalMoves() {
     const legalMoves = [];
-    for (let x = 0; x < 9; x++) {
-      for (let y = 0; y < 9; y++) {
+    for (let x = 0; x < GAMEBOARD_WIDTH - 1; x++) {
+      for (let y = 0; y < GAMEBOARD_LENGTH - 1; y++) {
         legalMoves.push({ x, y });
       }
     }
