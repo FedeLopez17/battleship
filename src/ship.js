@@ -7,16 +7,16 @@ export default class Ship {
     }
 
     this.length = length;
+    this.coordinates = null;
+    this.hitsTaken = [];
+    this.sunk = false;
   }
 
-  hitsTaken = 0;
-  sunk = false;
-
-  hit() {
-    this.hitsTaken++;
+  hit(coordinates) {
+    this.hitsTaken.push(coordinates);
   }
 
   isSunk() {
-    return this.hitsTaken === this.length;
+    return this.hitsTaken.length === this.length;
   }
 }

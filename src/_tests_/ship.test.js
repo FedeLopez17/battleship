@@ -7,17 +7,15 @@ test("Ship public methods", () => {
 
   const ship = new Ship(6);
 
-  expect(ship.hitsTaken).toBe(0);
   expect(ship.isSunk()).toBe(false);
 
   for (let i = 0; i < 5; i++) {
-    ship.hit();
+    ship.hit(null);
   }
 
-  expect(ship.hitsTaken).toBe(5);
   expect(ship.isSunk()).toBe(false);
 
-  ship.hit();
-  expect(ship.hitsTaken).toBe(6);
+  ship.hit(null);
+
   expect(ship.isSunk()).toBe(true);
 });
