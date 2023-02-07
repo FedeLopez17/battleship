@@ -2,13 +2,16 @@ import Gameboard from "../gameboard";
 
 test("Gameboard public methods", () => {
   const gameboard = new Gameboard();
-  expect(gameboard.getState()).toEqual({ ships: [], missedAttacks: [] });
 
-  gameboard.placeShip([
+  const firstCoordinates = [
     { x: 1, y: 3 },
     { x: 2, y: 3 },
     { x: 3, y: 3 },
-  ]);
+  ];
+
+  gameboard.placeShip(firstCoordinates);
+
+  expect(() => gameboard.placeShip(firstCoordinates)).toThrow(Error);
 
   expect(gameboard.getState().ships).toEqual([
     {
