@@ -55,7 +55,9 @@ export default class Gameboard {
   }
 
   receiveAttack(coordinates) {
-    this.ships.forEach((ship) => {
+    console.log(coordinates);
+
+    for (const ship of this.ships) {
       const shipCoordinates = JSON.stringify(ship.coordinates);
       const attackCoordinates = JSON.stringify(coordinates);
 
@@ -63,7 +65,7 @@ export default class Gameboard {
         ship.hit(coordinates);
         return;
       }
-    });
+    }
 
     // If the coordinates don't belong to any ship, the attack missed.
     this.missedAttacks.push(coordinates);

@@ -31,8 +31,13 @@ test("Gameboard public methods", () => {
 
   gameboard.receiveAttack({ x: 1, y: 3 });
   gameboard.receiveAttack({ x: 2, y: 3 });
+  gameboard.receiveAttack({ x: 0, y: 1 });
 
   expect(gameboard.allShipsSunk()).toBe(false);
+  expect(gameboard.getState().missedAttacks).toEqual([
+    { x: 0, y: 0 },
+    { x: 0, y: 1 },
+  ]);
 
   gameboard.receiveAttack({ x: 3, y: 3 });
 
