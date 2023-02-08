@@ -27,6 +27,8 @@ test("Gameboard public methods", () => {
   ]);
 
   gameboard.receiveAttack({ x: 0, y: 0 });
+  gameboard.receiveAttack({ x: 0, y: 0 });
+
   expect(gameboard.getState().missedAttacks).toEqual([{ x: 0, y: 0 }]);
 
   gameboard.receiveAttack({ x: 1, y: 3 });

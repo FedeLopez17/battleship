@@ -55,8 +55,6 @@ export default class Gameboard {
   }
 
   receiveAttack(coordinates) {
-    console.log(coordinates);
-
     for (const ship of this.ships) {
       const shipCoordinates = JSON.stringify(ship.coordinates);
       const attackCoordinates = JSON.stringify(coordinates);
@@ -67,8 +65,13 @@ export default class Gameboard {
       }
     }
 
-    // If the coordinates don't belong to any ship, the attack missed.
-    this.missedAttacks.push(coordinates);
+    // If the coordinates don't belong to any ship, the attack missed
+    if (
+      // Make sure that the coordinates aren't already in missedAttacks
+      !JSON.stringify(this.missedAttacks).includes(JSON.stringify(coordinates))
+    ) {
+      this.missedAttacks.push(coordinates);
+    }
   }
 
   allShipsSunk() {
