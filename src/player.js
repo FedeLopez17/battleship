@@ -59,6 +59,7 @@ export class ComputerPlayer extends Player {
       for (let i = 0; i < shipLength; i++) {
         if (adjacentCells.length === shipLength) {
           availableCoordinates.push(adjacentCells);
+          break;
         }
 
         nextCell = isHorizontal
