@@ -54,24 +54,31 @@ export default class Gameboard {
     });
   }
 
+  // returns whether the attack was successful or not
   receiveAttack(coordinates) {
+    const attackCoordinates = JSON.stringify(coordinates);
+
     for (const ship of this.ships) {
       const shipCoordinates = JSON.stringify(ship.coordinates);
-      const attackCoordinates = JSON.stringify(coordinates);
+      const shipHitsTaken = JSON.stringify(ship.hitsTaken);
 
       if (shipCoordinates.includes(attackCoordinates)) {
+        if (shipHitsTaken.includes(attackCoordinates)) return false;
+
         ship.hit(coordinates);
-        return;
+        return true;
       }
     }
 
-    // If the coordinates don't belong to any ship, the attack missed
-    if (
-      // Make sure that the coordinates aren't already in missedAttacks
-      !JSON.stringify(this.missedAttacks).includes(JSON.stringify(coordinates))
-    ) {
-      this.missedAttacks.push(coordinates);
+    // If the coordinates don't belong to any ship, the attack missed.
+
+    // Make sure that the coordinates aren't already in missedAttacks
+    if (JSON.stringify(this.missedAttacks).includes(attackCoordinates)) {
+      return false;
     }
+
+    this.missedAttacks.push(coordinates);
+    return true;
   }
 
   allShipsSunk() {
