@@ -1,23 +1,56 @@
 import { ComputerPlayer, Player } from "./player";
 
 const GAME = {
-  over: false,
-  winner: undefined,
-  currentTurn: "player-one",
   shipLengths: [5, 4, 3, 3, 2],
-  players: { "player-one": null, "player-two": new ComputerPlayer() },
+  started: false,
 };
 
-export function gameIsOver() {
-  return GAME.over;
+function resetGame() {
+  GAME.over = false;
+  GAME.winner = undefined;
+  GAME.currentTurn = "player-one";
+  GAME.players = { "player-one": null, "player-two": null };
+  GAME.mode = { isPve: undefined, isPvp: undefined };
+  GAME.started = false;
 }
 
-export function gameWinner() {
-  return GAME.winner;
+export function getGameState() {
+  return {
+    currentTurn: GAME.currentTurn,
+    availableShips: [...GAME.shipLengths],
+    isOver: GAME.over,
+    winner: GAME.winner,
+  };
 }
 
-export function availableShips() {
-  return [...GAME.shipLengths];
+function aiPlacesShips() {
+  GAME.shipLengths.forEach((shipLength) => {
+    const randomCoordinates =
+      GAME.players["player-two"].getRandomPlacementCoordinates(shipLength);
+    GAME.players["player-two"].gameboard.placeShip(randomCoordinates);
+  });
+}
+
+export function startPveGame(playerName) {
+  if (!playerName) throw new Error("Player name argument missing");
+
+  resetGame();
+  GAME.mode.isPve = true;
+  GAME.players["player-one"] = new Player(playerName);
+  GAME.players["player-two"] = new ComputerPlayer();
+  aiPlacesShips();
+  GAME.started = true;
+}
+
+export function startPvpGame(playerOneName, playerTwoName) {
+  if (!playerOneName) throw new Error("Player one name argument missing");
+  if (!playerTwoName) throw new Error("Player two name argument missing");
+
+  resetGame();
+  GAME.mode.isPvp = true;
+  GAME.players["player-one"] = new Player(playerOneName);
+  GAME.players["player-two"] = new Player(playerTwoName);
+  GAME.started = true;
 }
 
 function switchTurns() {
@@ -27,34 +60,20 @@ function switchTurns() {
 
 function nextTurn() {
   switchTurns();
-  if (GAME.currentTurn === "player-two") aiPlaysTurn();
+  if (GAME.mode.isPve && GAME.currentTurn === "player-two") aiPlaysTurn();
 }
 
-export function instantiateHumanPlayer(name) {
-  if (!name) throw new Error("Name argument missing");
-  if (GAME.players["player-one"]) throw new Error("Player one already exists");
+export function placeShips(player, shipsCoordinates) {
+  if (!player) throw new Error("player argument missing");
+  if (!shipsCoordinates) throw new Error("coordinates argument missing");
+  if (!GAME.players[player]) throw new Error(`No ${player}`);
 
-  const playerOne = new Player(name);
-  GAME.players["player-one"] = playerOne;
-}
-
-export function placeShips(shipsCoordinates) {
   for (const coordinates of shipsCoordinates) {
-    if (!GAME.players["player-one"]) throw new Error("No player one");
-
-    GAME.players["player-one"].gameboard.placeShip(coordinates);
+    GAME.players[player].gameboard.placeShip(coordinates);
   }
 }
 
-GAME.shipLengths.forEach((shipLength) => {
-  const randomCoordinates =
-    GAME.players["player-two"].getRandomPlacementCoordinates(shipLength);
-  GAME.players["player-two"].gameboard.placeShip(randomCoordinates);
-});
-
-function attack({ attacker, receiver, coordinates }) {
-  if (attacker !== GAME.currentTurn || GAME.over) return;
-
+function attack({ receiver, coordinates }) {
   const successfulAttack =
     GAME.players[receiver].gameboard.receiveAttack(coordinates);
 
@@ -62,6 +81,13 @@ function attack({ attacker, receiver, coordinates }) {
 }
 
 export function humanPlaysTurn({ attacker, coordinates }) {
+  if (!GAME.started) throw new Error("can't play until game has been started ");
+  if (!attacker) throw new Error("attacker argument missing");
+  if (!coordinates) throw new Error("coordinates argument missing");
+  if (attacker !== GAME.currentTurn || GAME.over) {
+    throw new Error(`Not ${attacker}'s turn`);
+  }
+
   const receiver = attacker === "player-one" ? "player-two" : "player-one";
 
   if (GAME.players[attacker].gameboard.allShipsSunk()) {
@@ -69,7 +95,7 @@ export function humanPlaysTurn({ attacker, coordinates }) {
     GAME.winner = receiver;
   }
 
-  const successfulAttack = attack({ attacker, receiver, coordinates });
+  const successfulAttack = attack({ receiver, coordinates });
   if (successfulAttack) {
     nextTurn();
 
@@ -90,7 +116,6 @@ function aiPlaysTurn() {
   }
 
   const successfulAttack = attack({
-    attacker,
     receiver,
     coordinates: GAME.players[attacker].getRandomAttackCoordinates(),
   });
