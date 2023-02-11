@@ -200,14 +200,14 @@ test("game loop PVP mode", () => {
     coordinates: firstAttackCoordinates,
   });
 
-  let playerTwoHitsTakenExpectedLength = 1;
+  let playerTwoExpectedHitsTaken = 1;
 
   expect(firstAttackOutcome.player).toBe("player-two");
   expect(firstAttackOutcome.gameboardState.ships[0].hitsTaken[0]).toEqual(
     firstAttackCoordinates
   );
   expect(firstAttackOutcome.gameboardState.ships[0].hitsTaken).toHaveLength(
-    playerTwoHitsTakenExpectedLength
+    playerTwoExpectedHitsTaken
   );
   expect(firstAttackOutcome.gameboardState.missedAttacks).toHaveLength(0);
 
@@ -239,9 +239,9 @@ test("game loop PVP mode", () => {
         0
       );
 
-      playerTwoHitsTakenExpectedLength++;
+      playerTwoExpectedHitsTaken++;
 
-      const playerTwoTotalHitsTakenLength =
+      const playerTwoTotalHitsTaken =
         playerOneAttackOutcome.gameboardState.ships.reduce(
           (totalLength, currentShip) => {
             return totalLength + currentShip.hitsTaken.length;
@@ -249,9 +249,7 @@ test("game loop PVP mode", () => {
           0
         );
 
-      expect(playerTwoTotalHitsTakenLength).toBe(
-        playerTwoHitsTakenExpectedLength
-      );
+      expect(playerTwoTotalHitsTaken).toBe(playerTwoExpectedHitsTaken);
 
       // player two plays
       const playerTwoPlayRandomly = () => {
@@ -272,6 +270,6 @@ test("game loop PVP mode", () => {
   }
 
   expect(getGameState().isOver).toBe(true);
-  expect(playerTwoHitsTakenExpectedLength).toBe(17);
+  expect(playerTwoExpectedHitsTaken).toBe(17);
   expect(getGameState().winner).toBe("player-one");
 });
