@@ -25,11 +25,11 @@ export default class Gameboard {
     return {
       ships: this.ships,
       missedAttacks: this.missedAttacks,
-      emptyCells: this.emptyCells,
+      emptyCells: this._getEmptyCells(),
     };
   }
 
-  getEmptyCells() {
+  _getEmptyCells() {
     return [...this.emptyCells];
   }
 
