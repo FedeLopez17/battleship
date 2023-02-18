@@ -25,12 +25,8 @@ export default class Gameboard {
     return {
       ships: this.ships,
       missedAttacks: this.missedAttacks,
-      emptyCells: this._getEmptyCells(),
+      emptyCells: [...this.emptyCells],
     };
-  }
-
-  _getEmptyCells() {
-    return [...this.emptyCells];
   }
 
   placeShip(coordinates) {
