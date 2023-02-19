@@ -31,3 +31,84 @@ test("AI player can place ships randomly", () => {
 
   expect(() => computer.getRandomPlacementCoordinates(11)).toThrow(Error);
 });
+
+test("AI player can attack adjacent coordinates", () => {
+  const computer = new ComputerPlayer();
+
+  expect(computer.getAdjacentAttackCoordinates({ x: 4, y: 3 })).toEqual({
+    x: 4,
+    y: 2,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 4, y: 3 })).toEqual({
+    x: 4,
+    y: 4,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 4, y: 3 })).toEqual({
+    x: 3,
+    y: 3,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 3, y: 3 })).toEqual({
+    x: 2,
+    y: 3,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 2, y: 3 })).toEqual({
+    x: 1,
+    y: 3,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 2, y: 3 })).toEqual({
+    x: 5,
+    y: 3,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 5, y: 3 })).toEqual({
+    x: 6,
+    y: 3,
+  });
+  [
+    { x: 4, y: 2 },
+    { x: 4, y: 4 },
+    { x: 3, y: 3 },
+    { x: 2, y: 3 },
+    { x: 1, y: 3 },
+    { x: 5, y: 3 },
+    { x: 6, y: 3 },
+  ].forEach((coordinates) =>
+    expect(computer.legalMoves).not.toContainEqual(coordinates)
+  );
+  expect(computer.legalMoves).toHaveLength(93);
+
+  expect(computer.getAdjacentAttackCoordinates({ x: 3, y: 7 }, true)).toEqual({
+    x: 3,
+    y: 6,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 3, y: 7 })).toEqual({
+    x: 3,
+    y: 8,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 3, y: 7 })).toEqual({
+    x: 2,
+    y: 7,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 2, y: 7 })).toEqual({
+    x: 1,
+    y: 7,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 1, y: 7 })).toEqual({
+    x: 0,
+    y: 7,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 0, y: 7 })).toEqual({
+    x: 4,
+    y: 7,
+  });
+  [
+    { x: 3, y: 6 },
+    { x: 3, y: 8 },
+    { x: 2, y: 7 },
+    { x: 1, y: 7 },
+    { x: 0, y: 7 },
+    { x: 4, y: 7 },
+  ].forEach((coordinates) =>
+    expect(computer.legalMoves).not.toContainEqual(coordinates)
+  );
+  expect(computer.legalMoves).toHaveLength(87);
+});
