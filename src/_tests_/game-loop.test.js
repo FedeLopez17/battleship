@@ -5,8 +5,8 @@ import {
   placeShips,
   startPveGame,
   startPvpGame,
-} from "../gameLoop";
-import randomIntegerInRange from "../helper-functions";
+} from "../game-loop";
+import { randomIntegerInRange } from "../helper-functions";
 
 test("game loop PVE mode", () => {
   expect(getGameState().isOver).toBeUndefined();
