@@ -1,5 +1,5 @@
 import Gameboard, { GAMEBOARD_HEIGHT, GAMEBOARD_WIDTH } from "./gameboard";
-import randomIntegerInRange, { arrIncludesObj } from "./helper-functions";
+import { arrIncludesObj, randomIntegerInRange } from "./helper-functions";
 
 export class Player {
   constructor(name) {
@@ -54,6 +54,8 @@ export class ComputerPlayer extends Player {
       this._lastCoordinatesArgument = null;
       this._lastDirection = null;
       this._lastCoordinatesAttacked = null;
+      this._isVertical = false;
+      this._isHorizontal = false;
 
       // clear and populate horizontal path
       this._horizontalPath.left = [];
@@ -112,7 +114,7 @@ export class ComputerPlayer extends Player {
         this._lastCoordinatesAttacked = this._verticalPath.above.shift();
         this._lastDirection = "above";
       } else if (
-        this._lastDirection === "above" &&
+        [null, "below", "above"].includes(this._lastDirection) &&
         this._horizontalPath.left.length
       ) {
         this._lastCoordinatesAttacked = this._horizontalPath.left.splice(-1)[0];
@@ -140,9 +142,7 @@ export class ComputerPlayer extends Player {
       !this._isVertical &&
       !this._isHorizontal
     ) {
-      coordinates.y ===
-        this._verticalPath.below[this._verticalPath.below.length - 1].y + 1 ||
-      coordinates.y === this._verticalPath.above[0].y - 1
+      this._lastDirection === "below" || this._lastDirection === "above"
         ? (this._isVertical = true)
         : (this._isHorizontal = true);
     }

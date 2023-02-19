@@ -35,6 +35,7 @@ test("AI player can place ships randomly", () => {
 test("AI player can attack adjacent coordinates", () => {
   const computer = new ComputerPlayer();
 
+  // Ship 1
   expect(computer.getAdjacentAttackCoordinates({ x: 4, y: 3 })).toEqual({
     x: 4,
     y: 2,
@@ -76,6 +77,7 @@ test("AI player can attack adjacent coordinates", () => {
   );
   expect(computer.legalMoves).toHaveLength(93);
 
+  // Ship 2
   expect(computer.getAdjacentAttackCoordinates({ x: 3, y: 7 }, true)).toEqual({
     x: 3,
     y: 6,
@@ -111,4 +113,48 @@ test("AI player can attack adjacent coordinates", () => {
     expect(computer.legalMoves).not.toContainEqual(coordinates)
   );
   expect(computer.legalMoves).toHaveLength(87);
+
+  // Ship 3
+  expect(computer.getAdjacentAttackCoordinates({ x: 3, y: 9 }, true)).toEqual({
+    x: 2,
+    y: 9,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 2, y: 9 })).toEqual({
+    x: 1,
+    y: 9,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 1, y: 9 })).toEqual({
+    x: 0,
+    y: 9,
+  });
+  [
+    { x: 2, y: 9 },
+    { x: 1, y: 9 },
+    { x: 0, y: 9 },
+  ].forEach((coordinates) =>
+    expect(computer.legalMoves).not.toContainEqual(coordinates)
+  );
+  expect(computer.legalMoves).toHaveLength(84);
+
+  // Ship 4
+  expect(computer.getAdjacentAttackCoordinates({ x: 5, y: 2 }, true)).toEqual({
+    x: 5,
+    y: 1,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 5, y: 2 })).toEqual({
+    x: 6,
+    y: 2,
+  });
+  expect(computer.getAdjacentAttackCoordinates({ x: 6, y: 2 })).toEqual({
+    x: 7,
+    y: 2,
+  });
+  [
+    { x: 5, y: 1 },
+    { x: 6, y: 2 },
+    { x: 7, y: 2 },
+  ].forEach((coordinates) =>
+    expect(computer.legalMoves).not.toContainEqual(coordinates)
+  );
+  expect(computer.legalMoves).toHaveLength(81);
 });
