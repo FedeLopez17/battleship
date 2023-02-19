@@ -1,5 +1,4 @@
 import Gameboard, { GAMEBOARD_HEIGHT, GAMEBOARD_WIDTH } from "./gameboard";
-import { getGameState } from "./gameLoop";
 import randomIntegerInRange, { arrIncludesObj } from "./helper-functions";
 
 export class Player {
