@@ -1,4 +1,5 @@
 import { ComputerPlayer, Player } from "./player";
+import { arrIncludesObj } from "./helper-functions";
 
 const GAME = {
   shipLengths: [5, 4, 3, 3, 2],
@@ -131,7 +132,7 @@ function aiPlaysTurn() {
     if (!lastHit) return;
 
     for (const ship of GAME.players[receiver].gameboard.ships) {
-      if (JSON.stringify(ship.coordinates).includes(JSON.stringify(lastHit))) {
+      if (arrIncludesObj(ship.coordinates, lastHit)) {
         return !ship.isSunk();
       }
     }
