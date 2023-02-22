@@ -1,3 +1,4 @@
+import { arrIncludesObj } from "./helper-functions";
 import Ship from "./ship";
 
 export const GAMEBOARD_WIDTH = 10;
@@ -31,7 +32,7 @@ export default class Gameboard {
 
   placeShip(coordinates) {
     const emtpyCoordinates = coordinates.filter((coords) => {
-      return JSON.stringify(this.emptyCells).includes(JSON.stringify(coords));
+      return arrIncludesObj(this.emptyCells, coords);
     });
 
     if (emtpyCoordinates.length !== coordinates.length) {
@@ -52,14 +53,9 @@ export default class Gameboard {
 
   // returns whether the attack was successful or not
   receiveAttack(coordinates) {
-    const attackCoordinates = JSON.stringify(coordinates);
-
     for (const ship of this.ships) {
-      const shipCoordinates = JSON.stringify(ship.coordinates);
-      const shipHitsTaken = JSON.stringify(ship.hitsTaken);
-
-      if (shipCoordinates.includes(attackCoordinates)) {
-        if (shipHitsTaken.includes(attackCoordinates)) return false;
+      if (arrIncludesObj(ship.coordinates, coordinates)) {
+        if (arrIncludesObj(ship.hitsTaken, coordinates)) return false;
 
         ship.hit(coordinates);
         return true;
@@ -69,7 +65,7 @@ export default class Gameboard {
     // If the coordinates don't belong to any ship, the attack missed.
 
     // Make sure that the coordinates aren't already in missedAttacks
-    if (JSON.stringify(this.missedAttacks).includes(attackCoordinates)) {
+    if (arrIncludesObj(this.missedAttacks, coordinates)) {
       return false;
     }
 
