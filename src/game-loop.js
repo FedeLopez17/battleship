@@ -21,6 +21,7 @@ export function getGameState() {
     availableShips: [...GAME.shipLengths],
     isOver: GAME.over,
     winner: GAME.winner,
+    players: GAME.players,
     gameboards: {
       "player-one": GAME.players["player-one"]
         ? GAME.players["player-one"].gameboard.getState()
