@@ -21,6 +21,14 @@ export function getGameState() {
     availableShips: [...GAME.shipLengths],
     isOver: GAME.over,
     winner: GAME.winner,
+    gameboards: {
+      "player-one": GAME.players["player-one"]
+        ? GAME.players["player-one"].gameboard.getState()
+        : null,
+      "player-two": GAME.players["player-two"]
+        ? GAME.players["player-two"].gameboard.getState()
+        : null,
+    },
   };
 }
 
@@ -91,14 +99,14 @@ export function humanPlaysTurn({ attacker, coordinates }) {
 
   const receiver = attacker === "player-one" ? "player-two" : "player-one";
 
-  if (GAME.players[attacker].gameboard.allShipsSunk()) {
-    GAME.over = true;
-    GAME.winner = receiver;
-  }
-
   const successfulAttack = attack({ receiver, coordinates });
   if (successfulAttack) {
-    nextTurn();
+    if (GAME.players[receiver].gameboard.allShipsSunk()) {
+      GAME.over = true;
+      GAME.winner = attacker;
+    } else {
+      nextTurn();
+    }
 
     return {
       player: receiver,
@@ -113,11 +121,6 @@ let isDifferentShip;
 function aiPlaysTurn() {
   const attacker = "player-two";
   const receiver = "player-one";
-
-  if (GAME.players[attacker].gameboard.allShipsSunk()) {
-    GAME.over = true;
-    GAME.winner = receiver;
-  }
 
   const getPlayerOneTotalHitsTaken = () => {
     return GAME.players["player-one"].gameboard.ships.reduce(
@@ -150,6 +153,13 @@ function aiPlaysTurn() {
     const successfulAttack = attack({ receiver, coordinates });
     const playerOneHitsTakenAfterAttack = getPlayerOneTotalHitsTaken();
     if (successfulAttack) {
+      if (GAME.players[receiver].gameboard.allShipsSunk()) {
+        GAME.over = true;
+        GAME.winner = attacker;
+      } else {
+        nextTurn();
+      }
+
       if (
         playerOneHitsTakenAfterAttack ===
         playerOneHitsTakenBeforeAttack + 1
@@ -157,7 +167,6 @@ function aiPlaysTurn() {
         lastHit = coordinates;
       }
 
-      nextTurn();
       return {
         player: receiver,
         gameboardState: GAME.players[receiver].gameboard.getState(),
@@ -179,7 +188,12 @@ function aiPlaysTurn() {
     if (!isDifferentShip) isDifferentShip = true;
 
     if (successfulAttack) {
-      nextTurn();
+      if (GAME.players[receiver].gameboard.allShipsSunk()) {
+        GAME.over = true;
+        GAME.winner = attacker;
+      } else {
+        nextTurn();
+      }
 
       return {
         player: receiver,

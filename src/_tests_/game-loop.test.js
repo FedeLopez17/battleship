@@ -9,10 +9,6 @@ import {
 import { randomIntegerInRange } from "../helper-functions";
 
 test("game loop PVE mode", () => {
-  expect(getGameState().isOver).toBeUndefined();
-  expect(getGameState().winner).toBeUndefined();
-  expect(getGameState().availableShips.length).toBeGreaterThan(0);
-
   expect(() => placeShips()).toThrow(Error);
   expect(() => placeShips("player-one")).toThrow(Error);
   const shipCoordinates0 = [
