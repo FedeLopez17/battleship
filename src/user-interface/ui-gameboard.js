@@ -36,21 +36,70 @@ function createGameboard() {
   return gameboard;
 }
 
+function updateShipsTracker(player) {
+  const gameState = getGameState();
+
+  const longestShipLength = Math.max(...gameState.availableShips);
+
+  const shipTracker = document.createElement("section");
+  shipTracker.classList.add("ships-tracker");
+  gameState.gameboards[player].ships.forEach((ship) => {
+    const uiShip = document.createElement("section");
+    uiShip.classList.add("ship");
+    uiShip.style.width = `${(100 / longestShipLength) * ship.length}%`;
+    if (ship.isSunk()) uiShip.classList.add("sunk");
+    for (
+      let shipCellNumber = 0;
+      shipCellNumber < ship.length;
+      shipCellNumber++
+    ) {
+      const uiShipSubdivision = document.createElement("section");
+      uiShipSubdivision.classList.add("subdivision");
+      uiShip.appendChild(uiShipSubdivision);
+    }
+    shipTracker.appendChild(uiShip);
+  });
+
+  const gameboardWrapper = document.querySelector(
+    `.gameboard-wrapper#${player}`
+  );
+  const previousTracker = gameboardWrapper.querySelector(".ships-tracker");
+
+  if (previousTracker) {
+    previousTracker.replaceWith(shipTracker);
+  } else {
+    player.includes("one")
+      ? gameboardWrapper.firstChild.before(shipTracker)
+      : gameboardWrapper.appendChild(shipTracker);
+  }
+}
+
+export function updateShipsTrackers() {
+  ["player-one", "player-two"].forEach(updateShipsTracker);
+}
+
 function updatePveGameboards() {
   const gameState = getGameState();
   updatePveGameboard("player-two");
+  updateShipsTracker("player-two");
+
   if (gameState.isOver && gameState.winner === "player-one") {
     displayGameOverScreen(gameState.players["player-one"].name);
     return;
   }
 
   const thinkingTime = randomIntegerInRange(600, 1000);
+  const playerOneGameboardWrapper = document.querySelector(
+    ".gameboard-wrapper#player-one"
+  );
   const playerTwoGameboard = document.querySelector(
     ".gameboard-wrapper#player-two .gameboard"
   );
   playerTwoGameboard.classList.toggle("disabled");
+
   setTimeout(() => {
     updatePveGameboard("player-one");
+    updateShipsTracker("player-one");
     playerTwoGameboard.classList.toggle("disabled");
 
     if (gameState.isOver) {
@@ -106,11 +155,12 @@ export function updatePveGameboard(player) {
       });
     });
   }
-
   const gameboardWrapper = document.querySelector(
     `.gameboard-wrapper#${player}`
   );
+  const previousGameboard = gameboardWrapper.querySelector(".gameboard");
 
-  gameboardWrapper.innerHTML = "";
-  gameboardWrapper.appendChild(gameboard);
+  previousGameboard
+    ? previousGameboard.replaceWith(gameboard)
+    : gameboardWrapper.appendChild(gameboard);
 }

@@ -3,7 +3,7 @@ import "../styles/gameboard.css";
 import "../styles/pve-battle-screen.css";
 import "../styles/game-over-screen.css";
 
-import { updatePveGameboard } from "./ui-gameboard";
+import { updatePveGameboard, updateShipsTrackers } from "./ui-gameboard";
 import { placeShips, startPveGame } from "../game-loop";
 
 const container = document.querySelector("#container");
@@ -11,7 +11,7 @@ const container = document.querySelector("#container");
 export function displayPveBattle() {
   const battleScreen = document.createElement("section");
   battleScreen.classList.add("screen");
-  battleScreen.id = "battle";
+  battleScreen.id = "pve-battle";
   container.appendChild(battleScreen);
 
   const PLAYERS = ["player-one", "player-two"];
@@ -23,6 +23,8 @@ export function displayPveBattle() {
     battleScreen.appendChild(gameboardWrapper);
     updatePveGameboard(player);
   });
+
+  updateShipsTrackers();
 }
 
 startPveGame("Federico");

@@ -15,7 +15,7 @@
 
 .gameboard {
   aspect-ratio: 2/2;
-  width: min(90%, 700px);
+  width: min(90%, 500px);
   display: flex;
   background-color: white;
   pointer-events: none;
@@ -67,4 +67,32 @@
 
 .gameboard.disabled .cell {
   pointer-events: none;
+}
+
+.gameboard-wrapper .ships-tracker {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.gameboard-wrapper#player-one .ships-tracker {
+  align-items: flex-end;
+}
+
+.ships-tracker .ship {
+  flex: 1;
+  display: flex;
+  gap: 2px;
+}
+
+.ships-tracker .ship > .subdivision {
+  flex: 1;
+  background-color: yellow;
+}
+
+.ships-tracker .ship.sunk > .subdivision {
+  background-color: orange;
 }
