@@ -1,18 +1,8 @@
 import { GAMEBOARD_HEIGHT, GAMEBOARD_WIDTH } from "../gameboard";
 import { getGameState, humanPlaysTurn } from "../game-loop";
 import { arrIncludesObj, randomIntegerInRange } from "../helper-functions";
-
-function displayGameOverScreen(winnerName) {
-  const gameOverScreen = document.createElement("section");
-  gameOverScreen.classList.add("screen");
-  gameOverScreen.id = "game-over";
-
-  const gameOverText = document.createElement("h1");
-  gameOverScreen.appendChild(gameOverText);
-  gameOverText.innerText = `Game Over, ${winnerName} won!`;
-
-  container.appendChild(gameOverScreen);
-}
+import { displayGameOverScreen } from "./ui-game-over";
+import "../styles/gameboard.css";
 
 export function updateShipsTracker(player) {
   const gameState = getGameState();
@@ -85,9 +75,6 @@ function updatePveGameboards() {
   }
 
   const thinkingTime = randomIntegerInRange(600, 1000);
-  const playerOneGameboardWrapper = document.querySelector(
-    ".gameboard-wrapper#player-one"
-  );
   const playerTwoGameboard = document.querySelector(
     ".gameboard-wrapper#player-two .gameboard"
   );
