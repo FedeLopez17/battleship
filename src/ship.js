@@ -11,7 +11,6 @@ export default class Ship {
 
   coordinates = null;
   hitsTaken = [];
-  sunk = false;
 
   hit(coordinates) {
     this.hitsTaken.push(coordinates);
