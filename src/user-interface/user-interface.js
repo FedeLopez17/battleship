@@ -3,7 +3,7 @@ import "../styles/gameboard.css";
 import "../styles/pve-battle-screen.css";
 import "../styles/game-over-screen.css";
 
-import { updatePveGameboard, updateShipsTrackers } from "./ui-gameboard";
+import { updatePveGameboard, updateShipsTracker } from "./ui-gameboard";
 import { placeShips, startPveGame } from "../game-loop";
 
 const container = document.querySelector("#container");
@@ -22,9 +22,8 @@ export function displayPveBattle() {
     gameboardWrapper.id = player;
     battleScreen.appendChild(gameboardWrapper);
     updatePveGameboard(player);
+    updateShipsTracker(player);
   });
-
-  updateShipsTrackers();
 }
 
 startPveGame("Federico");

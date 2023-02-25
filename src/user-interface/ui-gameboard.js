@@ -14,29 +14,7 @@ function displayGameOverScreen(winnerName) {
   container.appendChild(gameOverScreen);
 }
 
-function createGameboard() {
-  const gameboard = document.createElement("section");
-  gameboard.classList.add("gameboard");
-
-  for (let columnNumber = 0; columnNumber < GAMEBOARD_WIDTH; columnNumber++) {
-    const column = document.createElement("section");
-    column.classList.add("column");
-    column.id = `column-${columnNumber}`;
-    gameboard.appendChild(column);
-
-    for (let rowNumber = GAMEBOARD_HEIGHT - 1; rowNumber >= 0; rowNumber--) {
-      const cell = document.createElement("section");
-      cell.classList.add("cell");
-      const cellCoordinates = `{x: ${columnNumber}, y: ${rowNumber}}`;
-      cell.setAttribute("data-coordinates", cellCoordinates);
-      column.appendChild(cell);
-    }
-  }
-
-  return gameboard;
-}
-
-function updateShipsTracker(player) {
+export function updateShipsTracker(player) {
   const gameState = getGameState();
 
   const longestShipLength = Math.max(...gameState.availableShips);
@@ -74,8 +52,26 @@ function updateShipsTracker(player) {
   }
 }
 
-export function updateShipsTrackers() {
-  ["player-one", "player-two"].forEach(updateShipsTracker);
+function createGameboard() {
+  const gameboard = document.createElement("section");
+  gameboard.classList.add("gameboard");
+
+  for (let columnNumber = 0; columnNumber < GAMEBOARD_WIDTH; columnNumber++) {
+    const column = document.createElement("section");
+    column.classList.add("column");
+    column.id = `column-${columnNumber}`;
+    gameboard.appendChild(column);
+
+    for (let rowNumber = GAMEBOARD_HEIGHT - 1; rowNumber >= 0; rowNumber--) {
+      const cell = document.createElement("section");
+      cell.classList.add("cell");
+      const cellCoordinates = `{x: ${columnNumber}, y: ${rowNumber}}`;
+      cell.setAttribute("data-coordinates", cellCoordinates);
+      column.appendChild(cell);
+    }
+  }
+
+  return gameboard;
 }
 
 function updatePveGameboards() {
