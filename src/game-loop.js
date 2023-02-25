@@ -52,6 +52,11 @@ export function startPveGame(playerName) {
   GAME.started = true;
 }
 
+export function replayPveGame() {
+  const playerName = GAME.players["player-one"].name;
+  startPveGame(playerName);
+}
+
 export function startPvpGame(playerOneName, playerTwoName) {
   if (!playerOneName) throw new Error("Player one name argument missing");
   if (!playerTwoName) throw new Error("Player two name argument missing");

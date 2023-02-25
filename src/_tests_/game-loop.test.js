@@ -3,6 +3,7 @@ import {
   getGameState,
   humanPlaysTurn,
   placeShips,
+  replayPveGame,
   startPveGame,
   startPvpGame,
 } from "../game-loop";
@@ -145,6 +146,10 @@ test("game loop PVE mode", () => {
 
   expect(getGameState().isOver).toBe(true);
   expect(["player-one", "player-two"]).toContain(getGameState().winner);
+  replayPveGame();
+  expect(getGameState().winner).toBeUndefined();
+  expect(getGameState().isOver).toBe(false);
+  expect(getGameState().players["player-one"].name).toBe("Federico");
 });
 
 test("game loop PVP mode", () => {
