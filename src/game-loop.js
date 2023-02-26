@@ -33,6 +33,9 @@ export function getGameState() {
   };
 }
 
+let aiLastHit;
+let aiIsDifferentShip;
+
 function aiPlacesShips() {
   GAME.shipLengths.forEach((shipLength) => {
     const randomCoordinates =
@@ -50,6 +53,8 @@ export function startPveGame(playerName) {
   GAME.players["player-two"] = new ComputerPlayer();
   aiPlacesShips();
   GAME.started = true;
+  aiLastHit = null;
+  aiIsDifferentShip = null;
 }
 
 export function replayPveGame() {
@@ -121,9 +126,6 @@ export function humanPlaysTurn({ attacker, coordinates }) {
   }
 }
 
-let lastHit = null;
-let isDifferentShip;
-
 function aiPlaysTurn() {
   const attacker = "player-two";
   const receiver = "player-one";
@@ -138,22 +140,22 @@ function aiPlaysTurn() {
   };
 
   const lastShipHitIsNotSunk = () => {
-    if (!lastHit) return;
+    if (!aiLastHit) return;
 
     for (const ship of GAME.players[receiver].gameboard.ships) {
-      if (arrIncludesObj(ship.coordinates, lastHit)) {
+      if (arrIncludesObj(ship.coordinates, aiLastHit)) {
         return !ship.isSunk();
       }
     }
   };
 
-  if (lastHit && lastShipHitIsNotSunk()) {
+  if (aiLastHit && lastShipHitIsNotSunk()) {
     const coordinates = GAME.players[attacker].getAdjacentAttackCoordinates(
-      lastHit,
-      isDifferentShip
+      aiLastHit,
+      aiIsDifferentShip
     );
 
-    if (isDifferentShip) isDifferentShip = false;
+    if (aiIsDifferentShip) aiIsDifferentShip = false;
 
     const playerOneHitsTakenBeforeAttack = getPlayerOneTotalHitsTaken();
     const successfulAttack = attack({ receiver, coordinates });
@@ -170,7 +172,7 @@ function aiPlaysTurn() {
         playerOneHitsTakenAfterAttack ===
         playerOneHitsTakenBeforeAttack + 1
       ) {
-        lastHit = coordinates;
+        aiLastHit = coordinates;
       }
 
       return {
@@ -186,12 +188,12 @@ function aiPlaysTurn() {
       coordinates,
     });
     const playerOneHitsTakenAfterAttack = getPlayerOneTotalHitsTaken();
-    lastHit =
+    aiLastHit =
       playerOneHitsTakenAfterAttack === playerOneHitsTakenBeforeAttack + 1
         ? coordinates
         : null;
 
-    if (!isDifferentShip) isDifferentShip = true;
+    if (!aiIsDifferentShip) aiIsDifferentShip = true;
 
     if (successfulAttack) {
       if (GAME.players[receiver].gameboard.allShipsSunk()) {
