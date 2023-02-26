@@ -21,7 +21,6 @@ test("Gameboard public methods", () => {
         { x: 3, y: 3 },
       ],
       hitsTaken: [],
-      sunk: false,
       length: 3,
     },
   ]);
