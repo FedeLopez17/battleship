@@ -37,14 +37,6 @@ export function getGameState() {
 let aiLastHit;
 let aiIsDifferentShip;
 
-function aiPlacesShips() {
-  GAME.shipLengths.forEach((shipLength) => {
-    const randomCoordinates =
-      GAME.players["player-two"].getRandomPlacementCoordinates(shipLength);
-    GAME.players["player-two"].gameboard.placeShip(randomCoordinates);
-  });
-}
-
 export function startPveGame(playerName) {
   if (!playerName) throw new Error("Player name argument missing");
 
@@ -52,7 +44,6 @@ export function startPveGame(playerName) {
   GAME.mode.isPve = true;
   GAME.players["player-one"] = new Player(playerName);
   GAME.players["player-two"] = new ComputerPlayer();
-  aiPlacesShips();
   GAME.started = true;
   aiLastHit = null;
   aiIsDifferentShip = null;

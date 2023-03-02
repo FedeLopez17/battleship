@@ -1,3 +1,4 @@
+import { getGameState } from "./game-loop";
 import Gameboard, { GAMEBOARD_HEIGHT, GAMEBOARD_WIDTH } from "./gameboard";
 import { arrIncludesObj, randomIntegerInRange } from "./helper-functions";
 
@@ -12,6 +13,7 @@ export class ComputerPlayer extends Player {
   constructor() {
     super("AI");
     this.legalMoves = this._setInitiallLegalMoves();
+    this._randomizeGameboard();
   }
 
   _setInitiallLegalMoves() {
@@ -22,6 +24,154 @@ export class ComputerPlayer extends Player {
       }
     }
     return legalMoves;
+  }
+
+  getRandomPlacementCoordinates(shipLength) {
+    const isHorizontal = [true, false][randomIntegerInRange(0, 1)];
+
+    const availableCoordinates = [];
+
+    const emptyCells = this.gameboard.getState().emptyCells;
+    for (const currentCell of emptyCells) {
+      if (
+        (isHorizontal && currentCell.x > GAMEBOARD_WIDTH - shipLength) ||
+        (!isHorizontal && currentCell.y > GAMEBOARD_HEIGHT - shipLength)
+      ) {
+        continue;
+      }
+
+      const adjacentCells = [currentCell];
+      let nextCell;
+      let previousCell = currentCell;
+
+      for (let i = 0; i < shipLength; i++) {
+        if (adjacentCells.length === shipLength) {
+          availableCoordinates.push(adjacentCells);
+          break;
+        }
+
+        nextCell = isHorizontal
+          ? { x: previousCell.x + 1, y: previousCell.y }
+          : { x: previousCell.x, y: previousCell.y + 1 };
+
+        previousCell = nextCell;
+
+        if (arrIncludesObj(emptyCells, nextCell)) {
+          adjacentCells.push(nextCell);
+        } else break;
+      }
+    }
+
+    if (!availableCoordinates.length) throw new Error("No room available");
+
+    return availableCoordinates[
+      randomIntegerInRange(0, availableCoordinates.length - 1)
+    ];
+  }
+
+  _randomizeGameboard() {
+    const emptyCells = this.gameboard.getState().emptyCells;
+
+    const getRandomPlacementCoordinates = (shipLength) => {
+      const isHorizontal = [true, false][randomIntegerInRange(0, 1)];
+      const availableCoordinates = [];
+
+      for (const currentCell of emptyCells) {
+        if (
+          (isHorizontal && currentCell.x > GAMEBOARD_WIDTH - shipLength) ||
+          (!isHorizontal && currentCell.y > GAMEBOARD_HEIGHT - shipLength)
+        ) {
+          continue;
+        }
+
+        const adjacentCells = [currentCell];
+        let nextCell;
+        let previousCell = currentCell;
+
+        for (let i = 0; i < shipLength; i++) {
+          if (adjacentCells.length === shipLength) {
+            availableCoordinates.push(adjacentCells);
+            break;
+          }
+
+          nextCell = isHorizontal
+            ? { x: previousCell.x + 1, y: previousCell.y }
+            : { x: previousCell.x, y: previousCell.y + 1 };
+
+          previousCell = nextCell;
+
+          if (arrIncludesObj(emptyCells, nextCell)) {
+            adjacentCells.push(nextCell);
+          } else break;
+        }
+      }
+
+      const chosenCoordinates =
+        availableCoordinates[
+          randomIntegerInRange(0, availableCoordinates.length - 1)
+        ];
+
+      const coordinatesForDeletion = [];
+
+      for (let index = 0; index < chosenCoordinates.length; index++) {
+        const cellOnTheLeft = {
+          x: chosenCoordinates[index].x - 1,
+          y: chosenCoordinates[index].y,
+        };
+        if (
+          chosenCoordinates[index].x > 0 &&
+          !arrIncludesObj(chosenCoordinates, cellOnTheLeft)
+        ) {
+          coordinatesForDeletion.push(cellOnTheLeft);
+        }
+
+        const cellOnTheRight = {
+          x: chosenCoordinates[index].x + 1,
+          y: chosenCoordinates[index].y,
+        };
+        if (
+          chosenCoordinates[index].x < GAMEBOARD_WIDTH - 1 &&
+          !arrIncludesObj(chosenCoordinates, cellOnTheRight)
+        ) {
+          coordinatesForDeletion.push(cellOnTheRight);
+        }
+
+        const cellBelow = {
+          x: chosenCoordinates[index].x,
+          y: chosenCoordinates[index].y - 1,
+        };
+        if (
+          chosenCoordinates[index].y > 0 &&
+          !arrIncludesObj(chosenCoordinates, cellBelow)
+        ) {
+          coordinatesForDeletion.push(cellBelow);
+        }
+
+        const cellAbove = {
+          x: chosenCoordinates[index].x,
+          y: chosenCoordinates[index].y + 1,
+        };
+        if (
+          chosenCoordinates[index].y < GAMEBOARD_HEIGHT - 1 &&
+          !arrIncludesObj(chosenCoordinates, cellAbove)
+        ) {
+          coordinatesForDeletion.push(cellAbove);
+        }
+      }
+
+      [...chosenCoordinates, ...coordinatesForDeletion].forEach((coords) => {
+        const coordsIndex = emptyCells.findIndex(
+          (cell) => cell.x === coords.x && cell.y === coords.y
+        );
+        emptyCells.splice(coordsIndex, 1);
+      });
+      return chosenCoordinates;
+    };
+
+    getGameState().availableShips.forEach((shipLength) => {
+      const placementCoordinates = getRandomPlacementCoordinates(shipLength);
+      this.gameboard.placeShip(placementCoordinates);
+    });
   }
 
   getRandomAttackCoordinates() {
@@ -210,48 +360,5 @@ export class ComputerPlayer extends Player {
 
     this._lastCoordinatesArgument = coordinates;
     return this._lastCoordinatesAttacked;
-  }
-
-  getRandomPlacementCoordinates(shipLength) {
-    const isHorizontal = [true, false][randomIntegerInRange(0, 1)];
-
-    const availableCoordinates = [];
-
-    const emptyCells = this.gameboard.getState().emptyCells;
-    for (const currentCell of emptyCells) {
-      if (
-        (isHorizontal && currentCell.x > GAMEBOARD_WIDTH - shipLength) ||
-        (!isHorizontal && currentCell.y > GAMEBOARD_HEIGHT - shipLength)
-      ) {
-        continue;
-      }
-
-      const adjacentCells = [currentCell];
-      let nextCell;
-      let previousCell = currentCell;
-
-      for (let i = 0; i < shipLength; i++) {
-        if (adjacentCells.length === shipLength) {
-          availableCoordinates.push(adjacentCells);
-          break;
-        }
-
-        nextCell = isHorizontal
-          ? { x: previousCell.x + 1, y: previousCell.y }
-          : { x: previousCell.x, y: previousCell.y + 1 };
-
-        previousCell = nextCell;
-
-        if (arrIncludesObj(emptyCells, nextCell)) {
-          adjacentCells.push(nextCell);
-        } else break;
-      }
-    }
-
-    if (!availableCoordinates.length) throw new Error("No room available");
-
-    return availableCoordinates[
-      randomIntegerInRange(0, availableCoordinates.length - 1)
-    ];
   }
 }
