@@ -4,6 +4,7 @@ import { arrIncludesObj } from "./helper-functions";
 const GAME = {
   shipLengths: [5, 4, 3, 3, 2],
   started: false,
+  players: { "player-one": null, "player-two": null },
 };
 
 function resetGame() {
@@ -55,11 +56,6 @@ export function startPveGame(playerName) {
   GAME.started = true;
   aiLastHit = null;
   aiIsDifferentShip = null;
-}
-
-export function replayPveGame() {
-  const playerName = GAME.players["player-one"].name;
-  startPveGame(playerName);
 }
 
 export function startPvpGame(playerOneName, playerTwoName) {
