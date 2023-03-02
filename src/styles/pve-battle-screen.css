@@ -3,3 +3,11 @@
   background-color: beige;
   display: flex;
 }
+
+#pve-battle.screen #player-one .gameboard .cell:hover {
+  cursor: default;
+}
+
+#pve-battle.screen #player-one .gameboard .cell:not(.ship):hover {
+  background-color: white;
+}

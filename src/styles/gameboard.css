@@ -31,7 +31,7 @@
 
 .gameboard .cell {
   flex: 1;
-  outline: 1px solid grey;
+  border: 1px solid grey;
   pointer-events: auto;
   cursor: pointer;
 }

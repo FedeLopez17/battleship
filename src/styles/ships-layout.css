@@ -1,0 +1,40 @@
+.screen#ships-layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.screen#ships-layout input#name {
+  width: 400px;
+}
+
+.screen#ships-layout .gameboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.screen#ships-layout .gameboard .cell:hover {
+  cursor: default;
+}
+
+.screen#ships-layout .gameboard .cell:not(.ship):hover {
+  background-color: white;
+}
+
+.screen#ships-layout input#name {
+  outline: solid 2px;
+}
+
+.screen#ships-layout input#name.valid {
+  outline-color: lime;
+}
+.screen#ships-layout input#name.invalid {
+  outline-color: hotpink;
+}
+
+.screen#ships-layout input:focus-visible {
+  outline-color: skyblue;
+}

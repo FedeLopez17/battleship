@@ -147,3 +147,129 @@ export function updatePveGameboard(player) {
     ? previousGameboard.replaceWith(gameboard)
     : gameboardWrapper.appendChild(gameboard);
 }
+
+export function randomizedGameboard() {
+  const gameboard = createGameboard();
+  const emptyCells = [];
+  gameboard.querySelectorAll(".cell").forEach((cell) => {
+    const x = Number(cell.getAttribute("data-coordinates")[4]);
+    const y = Number(cell.getAttribute("data-coordinates")[10]);
+    emptyCells.push({ x, y });
+  });
+
+  const getRandomPlacementCoordinates = (shipLength) => {
+    const isHorizontal = [true, false][randomIntegerInRange(0, 1)];
+    const availableCoordinates = [];
+
+    for (const currentCell of emptyCells) {
+      if (
+        (isHorizontal && currentCell.x > GAMEBOARD_WIDTH - shipLength) ||
+        (!isHorizontal && currentCell.y > GAMEBOARD_HEIGHT - shipLength)
+      ) {
+        continue;
+      }
+
+      const adjacentCells = [currentCell];
+      let nextCell;
+      let previousCell = currentCell;
+
+      for (let i = 0; i < shipLength; i++) {
+        if (adjacentCells.length === shipLength) {
+          availableCoordinates.push(adjacentCells);
+          break;
+        }
+
+        nextCell = isHorizontal
+          ? { x: previousCell.x + 1, y: previousCell.y }
+          : { x: previousCell.x, y: previousCell.y + 1 };
+
+        previousCell = nextCell;
+
+        if (arrIncludesObj(emptyCells, nextCell)) {
+          adjacentCells.push(nextCell);
+        } else break;
+      }
+    }
+
+    const chosenCoordinates =
+      availableCoordinates[
+        randomIntegerInRange(0, availableCoordinates.length - 1)
+      ];
+
+    const coordinatesForDeletion = [];
+
+    for (let index = 0; index < chosenCoordinates.length; index++) {
+      const cellOnTheLeft = {
+        x: chosenCoordinates[index].x - 1,
+        y: chosenCoordinates[index].y,
+      };
+      if (
+        chosenCoordinates[index].x > 0 &&
+        !arrIncludesObj(chosenCoordinates, cellOnTheLeft)
+      ) {
+        coordinatesForDeletion.push(cellOnTheLeft);
+      }
+
+      const cellOnTheRight = {
+        x: chosenCoordinates[index].x + 1,
+        y: chosenCoordinates[index].y,
+      };
+      if (
+        chosenCoordinates[index].x < GAMEBOARD_WIDTH - 1 &&
+        !arrIncludesObj(chosenCoordinates, cellOnTheRight)
+      ) {
+        coordinatesForDeletion.push(cellOnTheRight);
+      }
+
+      const cellBelow = {
+        x: chosenCoordinates[index].x,
+        y: chosenCoordinates[index].y - 1,
+      };
+      if (
+        chosenCoordinates[index].y > 0 &&
+        !arrIncludesObj(chosenCoordinates, cellBelow)
+      ) {
+        coordinatesForDeletion.push(cellBelow);
+      }
+
+      const cellAbove = {
+        x: chosenCoordinates[index].x,
+        y: chosenCoordinates[index].y + 1,
+      };
+      if (
+        chosenCoordinates[index].y < GAMEBOARD_HEIGHT - 1 &&
+        !arrIncludesObj(chosenCoordinates, cellAbove)
+      ) {
+        coordinatesForDeletion.push(cellAbove);
+      }
+    }
+
+    [...chosenCoordinates, ...coordinatesForDeletion].forEach((coords) => {
+      const coordsIndex = emptyCells.findIndex(
+        (cell) => cell.x === coords.x && cell.y === coords.y
+      );
+      emptyCells.splice(coordsIndex, 1);
+    });
+    return chosenCoordinates;
+  };
+
+  let shipsCoordinates = [];
+
+  getGameState().availableShips.forEach((shipLength) => {
+    const placementCoordinates = getRandomPlacementCoordinates(shipLength);
+    shipsCoordinates.push(placementCoordinates);
+    placementCoordinates.forEach((coords) => {
+      gameboard
+        .querySelector(
+          `.cell[data-coordinates='{x: ${coords.x}, y: ${coords.y}}']`
+        )
+        .classList.add("ship");
+    });
+  });
+
+  gameboard.setAttribute(
+    "data-ships-coordinates",
+    JSON.stringify(shipsCoordinates)
+  );
+  return gameboard;
+}

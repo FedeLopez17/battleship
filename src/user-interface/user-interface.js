@@ -1,7 +1,11 @@
 import "../styles/main.css";
 import "../styles/pve-battle-screen.css";
 
-import { updatePveGameboard, updateShipsTracker } from "./ui-gameboard";
+import {
+  randomizedGameboard,
+  updatePveGameboard,
+  updateShipsTracker,
+} from "./ui-gameboard";
 import { placeShips, startPveGame } from "../game-loop";
 
 const container = document.querySelector("#container");
@@ -26,41 +30,71 @@ export function displayPveBattle() {
   });
 }
 
-startPveGame("Federico");
-
-// I will temporarily use this function to place the ships until I code the place-ships screen
-export function displayPveBattleWithShips() {
-  placeShips("player-one", [
-    [
-      { x: 2, y: 3 },
-      { x: 2, y: 4 },
-      { x: 2, y: 5 },
-      { x: 2, y: 6 },
-      { x: 2, y: 7 },
-    ],
-    [
-      { x: 0, y: 9 },
-      { x: 1, y: 9 },
-      { x: 2, y: 9 },
-      { x: 3, y: 9 },
-    ],
-    [
-      { x: 7, y: 4 },
-      { x: 8, y: 4 },
-      { x: 9, y: 4 },
-    ],
-    [
-      { x: 7, y: 6 },
-      { x: 8, y: 6 },
-      { x: 9, y: 6 },
-    ],
-    [
-      { x: 4, y: 1 },
-      { x: 5, y: 1 },
-    ],
-  ]);
-
+export function displayPveBattleWithShips({ name, shipsCoordinates }) {
+  startPveGame(name);
+  placeShips("player-one", shipsCoordinates);
   displayPveBattle();
 }
 
-displayPveBattleWithShips();
+export function displayShipsLayoutScreen(name) {
+  container.innerHTML = "";
+
+  const shipsLayoutScreen = document.createElement("section");
+  shipsLayoutScreen.classList.add("screen");
+  shipsLayoutScreen.id = "ships-layout";
+  container.appendChild(shipsLayoutScreen);
+
+  const nameInput = document.createElement("input");
+  nameInput.id = "name";
+  nameInput.placeholder = "Name";
+  nameInput.autocomplete = "off";
+  if (name) nameInput.value = name;
+  nameInput.addEventListener("input", () => {
+    if (!nameInput.value && nameInput.className !== "invalid")
+      nameInput.className = "invalid";
+    if (nameInput.value && nameInput.className !== "valid")
+      nameInput.className = "valid";
+  });
+  shipsLayoutScreen.appendChild(nameInput);
+
+  const gameboardWrapper = document.createElement("section");
+  gameboardWrapper.classList.add("gameboard-wrapper");
+  shipsLayoutScreen.appendChild(gameboardWrapper);
+
+  gameboardWrapper.append(randomizedGameboard());
+
+  const buttons = document.createElement("section");
+  buttons.classList.add("buttons");
+  gameboardWrapper.appendChild(buttons);
+
+  const randomizeButton = document.createElement("button");
+  randomizeButton.id = "randomize";
+  randomizeButton.innerText = "Randomize";
+  randomizeButton.addEventListener("click", () => {
+    shipsLayoutScreen
+      .querySelector(".gameboard")
+      .replaceWith(randomizedGameboard());
+  });
+  buttons.appendChild(randomizeButton);
+
+  const playButton = document.createElement("button");
+  playButton.id = "play";
+  playButton.innerText = "Play";
+  playButton.addEventListener("click", () => {
+    if (!nameInput.value) {
+      if (nameInput.className !== "invalid") nameInput.className = "invalid";
+      return;
+    }
+
+    const shipsCoordinates = JSON.parse(
+      gameboardWrapper
+        .querySelector(".gameboard")
+        .getAttribute("data-ships-coordinates")
+    );
+
+    displayPveBattleWithShips({ name: nameInput.value, shipsCoordinates });
+  });
+  buttons.appendChild(playButton);
+}
+
+displayShipsLayoutScreen();
