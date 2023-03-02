@@ -26,49 +26,6 @@ export class ComputerPlayer extends Player {
     return legalMoves;
   }
 
-  getRandomPlacementCoordinates(shipLength) {
-    const isHorizontal = [true, false][randomIntegerInRange(0, 1)];
-
-    const availableCoordinates = [];
-
-    const emptyCells = this.gameboard.getState().emptyCells;
-    for (const currentCell of emptyCells) {
-      if (
-        (isHorizontal && currentCell.x > GAMEBOARD_WIDTH - shipLength) ||
-        (!isHorizontal && currentCell.y > GAMEBOARD_HEIGHT - shipLength)
-      ) {
-        continue;
-      }
-
-      const adjacentCells = [currentCell];
-      let nextCell;
-      let previousCell = currentCell;
-
-      for (let i = 0; i < shipLength; i++) {
-        if (adjacentCells.length === shipLength) {
-          availableCoordinates.push(adjacentCells);
-          break;
-        }
-
-        nextCell = isHorizontal
-          ? { x: previousCell.x + 1, y: previousCell.y }
-          : { x: previousCell.x, y: previousCell.y + 1 };
-
-        previousCell = nextCell;
-
-        if (arrIncludesObj(emptyCells, nextCell)) {
-          adjacentCells.push(nextCell);
-        } else break;
-      }
-    }
-
-    if (!availableCoordinates.length) throw new Error("No room available");
-
-    return availableCoordinates[
-      randomIntegerInRange(0, availableCoordinates.length - 1)
-    ];
-  }
-
   _randomizeGameboard() {
     const emptyCells = this.gameboard.getState().emptyCells;
 
