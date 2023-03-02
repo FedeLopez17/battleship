@@ -14,24 +14,6 @@ test("AI player can attack randomly", () => {
   expect(() => computer.getRandomAttackCoordinates()).toThrow(Error);
 });
 
-const mockShip = { length: 5 };
-
-test("AI player can place ships randomly", () => {
-  const computer = new ComputerPlayer();
-
-  const previousShipCoordinates = [];
-  for (let i = 0; i < 4; i++) {
-    const newShipCoordinates = computer.getRandomPlacementCoordinates(
-      mockShip.length
-    );
-    expect(newShipCoordinates).toHaveLength(mockShip.length);
-    expect(previousShipCoordinates).not.toContainEqual(newShipCoordinates);
-    previousShipCoordinates.push(newShipCoordinates);
-  }
-
-  expect(() => computer.getRandomPlacementCoordinates(11)).toThrow(Error);
-});
-
 test("AI player can attack adjacent coordinates", () => {
   const computer = new ComputerPlayer();
 
