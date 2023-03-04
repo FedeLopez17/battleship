@@ -3,15 +3,14 @@ import Gameboard, { GAMEBOARD_HEIGHT, GAMEBOARD_WIDTH } from "./gameboard";
 import { arrIncludesObj, randomIntegerInRange } from "./helper-functions";
 
 export class Player {
-  constructor(name) {
-    this.name = name;
+  constructor() {
     this.gameboard = new Gameboard();
   }
 }
 
 export class ComputerPlayer extends Player {
   constructor() {
-    super("AI");
+    super();
     this.legalMoves = this._setInitiallLegalMoves();
     this._randomizeGameboard();
   }

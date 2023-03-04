@@ -6,7 +6,7 @@ import {
   updatePveGameboard,
   updateShipsTracker,
 } from "./ui-gameboard";
-import { placeShips, startPveGame } from "../game-loop";
+import { placeShips, startGame } from "../game-loop";
 
 const container = document.querySelector("#container");
 
@@ -30,32 +30,19 @@ export function displayPveBattle() {
   });
 }
 
-export function displayPveBattleWithShips({ name, shipsCoordinates }) {
-  startPveGame(name);
-  placeShips("player-one", shipsCoordinates);
+export function displayPveBattleWithShips(shipsCoordinates) {
+  startGame();
+  placeShips(shipsCoordinates);
   displayPveBattle();
 }
 
-export function displayShipsLayoutScreen(name) {
+export function displayShipsLayoutScreen() {
   container.innerHTML = "";
 
   const shipsLayoutScreen = document.createElement("section");
   shipsLayoutScreen.classList.add("screen");
   shipsLayoutScreen.id = "ships-layout";
   container.appendChild(shipsLayoutScreen);
-
-  const nameInput = document.createElement("input");
-  nameInput.id = "name";
-  nameInput.placeholder = "Name";
-  nameInput.autocomplete = "off";
-  if (name) nameInput.value = name;
-  nameInput.addEventListener("input", () => {
-    if (!nameInput.value && nameInput.className !== "invalid")
-      nameInput.className = "invalid";
-    if (nameInput.value && nameInput.className !== "valid")
-      nameInput.className = "valid";
-  });
-  shipsLayoutScreen.appendChild(nameInput);
 
   const gameboardWrapper = document.createElement("section");
   gameboardWrapper.classList.add("gameboard-wrapper");
@@ -81,18 +68,13 @@ export function displayShipsLayoutScreen(name) {
   playButton.id = "play";
   playButton.innerText = "Play";
   playButton.addEventListener("click", () => {
-    if (!nameInput.value) {
-      if (nameInput.className !== "invalid") nameInput.className = "invalid";
-      return;
-    }
-
     const shipsCoordinates = JSON.parse(
       gameboardWrapper
         .querySelector(".gameboard")
         .getAttribute("data-ships-coordinates")
     );
 
-    displayPveBattleWithShips({ name: nameInput.value, shipsCoordinates });
+    displayPveBattleWithShips(shipsCoordinates);
   });
   buttons.appendChild(playButton);
 }

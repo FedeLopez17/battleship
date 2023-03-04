@@ -70,7 +70,7 @@ function updatePveGameboards() {
   updateShipsTracker("player-two");
 
   if (gameState.isOver && gameState.winner === "player-one") {
-    displayGameOverScreen(gameState.players["player-one"].name);
+    displayGameOverScreen("player-one");
     return;
   }
 
@@ -86,7 +86,7 @@ function updatePveGameboards() {
     playerTwoGameboard.classList.toggle("disabled");
 
     if (gameState.isOver) {
-      displayGameOverScreen(gameState.players["player-two"].name);
+      displayGameOverScreen("player-two");
     }
   }, thinkingTime);
 }
@@ -126,12 +126,9 @@ export function updatePveGameboard(player) {
 
     cells.forEach((cell) => {
       cell.addEventListener("click", () => {
-        const attacker = player === "player-one" ? "player-two" : "player-one";
-        const x = Number(cell.getAttribute("data-coordinates")[4]);
-        const y = Number(cell.getAttribute("data-coordinates")[10]);
         humanPlaysTurn({
-          attacker,
-          coordinates: { x, y },
+          x: Number(cell.getAttribute("data-coordinates")[4]),
+          y: Number(cell.getAttribute("data-coordinates")[10]),
         });
 
         updatePveGameboards();
