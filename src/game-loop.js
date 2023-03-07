@@ -62,23 +62,20 @@ export function humanPlaysTurn(coordinates) {
     throw new Error(`Not human player's turn`);
   }
 
-  const attacker = "player-one";
-  const receiver = "player-two";
-
   const successfulAttack =
     GAME.players["player-two"].gameboard.receiveAttack(coordinates);
 
   if (successfulAttack) {
-    if (GAME.players[receiver].gameboard.allShipsSunk()) {
+    if (GAME.players["player-two"].gameboard.allShipsSunk()) {
       GAME.over = true;
-      GAME.winner = attacker;
+      GAME.winner = "player-one";
     } else {
       nextTurn();
     }
 
     return {
-      player: receiver,
-      gameboardState: GAME.players[receiver].gameboard.getState(),
+      player: "player-two",
+      gameboardState: GAME.players["player-two"].gameboard.getState(),
     };
   }
 }
