@@ -1,5 +1,4 @@
 import { ComputerPlayer, Player } from "./player";
-import { arrIncludesObj } from "./helper-functions";
 
 const GAME = {
   shipLengths: [5, 4, 3, 3, 2],
