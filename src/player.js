@@ -9,8 +9,12 @@ export class Player {
 }
 
 export class ComputerPlayer extends Player {
-  constructor() {
+  constructor(opponentGameboard) {
+    if (!opponentGameboard) {
+      throw new Error("opponent gameboard argument missing");
+    }
     super();
+    this.opponentGameboard = opponentGameboard;
     this.legalMoves = this._setInitiallLegalMoves();
     this._randomizeGameboard();
   }
@@ -130,7 +134,7 @@ export class ComputerPlayer extends Player {
     });
   }
 
-  getRandomAttackCoordinates() {
+  _getRandomAttackCoordinates() {
     if (!this.legalMoves.length) {
       throw new Error("No more cells left to attack");
     }
@@ -154,7 +158,7 @@ export class ComputerPlayer extends Player {
   _verticalPath = { below: [], above: [] };
   _horizontalPath = { left: [], right: [] };
 
-  getAdjacentAttackCoordinates(coordinates, isDifferentShip) {
+  _getAdjacentAttackCoordinates(coordinates, isDifferentShip) {
     if (!this._origin || isDifferentShip) {
       this._origin = coordinates;
       this._lastCoordinatesArgument = null;
@@ -315,6 +319,62 @@ export class ComputerPlayer extends Player {
     this.legalMoves.splice(lastAttackIndex, 1);
 
     this._lastCoordinatesArgument = coordinates;
+
     return this._lastCoordinatesAttacked;
+  }
+
+  lastHit = null;
+  isDifferentShip = null;
+
+  attack() {
+    const getOpponentTotalHits = () => {
+      return this.opponentGameboard.ships.reduce((totalHits, currentShip) => {
+        return totalHits + currentShip.hitsTaken.length;
+      }, 0);
+    };
+
+    const lastShipHitIsNotSunk = () => {
+      if (!this.lastHit) return;
+
+      for (const ship of this.opponentGameboard.ships) {
+        if (arrIncludesObj(ship.coordinates, this.lastHit)) {
+          return !ship.isSunk();
+        }
+      }
+    };
+
+    if (this.lastHit && lastShipHitIsNotSunk()) {
+      const coordinates = this._getAdjacentAttackCoordinates(
+        this.lastHit,
+        this.isDifferentShip
+      );
+
+      if (this.isDifferentShip) this.isDifferentShip = false;
+
+      const opponentHitsBeforeAttack = getOpponentTotalHits();
+      const successfulAttack =
+        this.opponentGameboard.receiveAttack(coordinates);
+      const opponentHitsAfterAttack = getOpponentTotalHits();
+      if (
+        successfulAttack &&
+        opponentHitsAfterAttack > opponentHitsBeforeAttack
+      ) {
+        this.lastHit = coordinates;
+
+        return successfulAttack;
+      }
+    } else {
+      const opponentHitsBeforeAttack = getOpponentTotalHits();
+      const coordinates = this._getRandomAttackCoordinates();
+      const successfulAttack =
+        this.opponentGameboard.receiveAttack(coordinates);
+      const opponentHitsAfterAttack = getOpponentTotalHits();
+      this.lastHit =
+        opponentHitsAfterAttack > opponentHitsBeforeAttack ? coordinates : null;
+
+      if (!this.isDifferentShip) this.isDifferentShip = true;
+
+      return successfulAttack;
+    }
   }
 }
