@@ -1,0 +1,13 @@
+#battle.screen {
+  height: 100%;
+  background-color: beige;
+  display: flex;
+}
+
+#battle.screen #player-one .gameboard .cell:hover {
+  cursor: default;
+}
+
+#battle.screen #player-one .gameboard .cell:not(.ship):hover {
+  background-color: white;
+}

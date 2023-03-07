@@ -1,6 +1,6 @@
 import "../styles/game-over-screen.css";
 import "../styles/ships-layout.css";
-import { displayShipsLayoutScreen } from "./user-interface";
+import displayShipsLayoutScreen from "./user-interface";
 
 export function displayGameOverScreen(winner) {
   const gameOverScreen = document.createElement("section");

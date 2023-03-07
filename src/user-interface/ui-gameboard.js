@@ -64,9 +64,9 @@ function createGameboard() {
   return gameboard;
 }
 
-function updatePveGameboards() {
+function updateGameboards() {
   const gameState = getGameState();
-  updatePveGameboard("player-two");
+  updateGameboard("player-two");
   updateShipsTracker("player-two");
 
   if (gameState.isOver && gameState.winner === "player-one") {
@@ -81,7 +81,7 @@ function updatePveGameboards() {
   playerTwoGameboard.classList.toggle("disabled");
 
   setTimeout(() => {
-    updatePveGameboard("player-one");
+    updateGameboard("player-one");
     updateShipsTracker("player-one");
     playerTwoGameboard.classList.toggle("disabled");
 
@@ -91,7 +91,7 @@ function updatePveGameboards() {
   }, thinkingTime);
 }
 
-export function updatePveGameboard(player) {
+export function updateGameboard(player) {
   const gameboard = createGameboard();
 
   const gameboardState = getGameState().gameboards[player];
@@ -131,7 +131,7 @@ export function updatePveGameboard(player) {
           y: Number(cell.getAttribute("data-coordinates")[10]),
         });
 
-        updatePveGameboards();
+        updateGameboards();
       });
     });
   }

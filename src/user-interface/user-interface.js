@@ -1,21 +1,21 @@
 import "../styles/main.css";
-import "../styles/pve-battle-screen.css";
+import "../styles/battle-screen.css";
 
 import {
   randomizedGameboard,
-  updatePveGameboard,
+  updateGameboard,
   updateShipsTracker,
 } from "./ui-gameboard";
 import { placeShips, startGame } from "../game-loop";
 
 const container = document.querySelector("#container");
 
-export function displayPveBattle() {
+function displayBattle() {
   container.innerHTML = "";
 
   const battleScreen = document.createElement("section");
   battleScreen.classList.add("screen");
-  battleScreen.id = "pve-battle";
+  battleScreen.id = "battle";
   container.appendChild(battleScreen);
 
   const PLAYERS = ["player-one", "player-two"];
@@ -25,18 +25,18 @@ export function displayPveBattle() {
     gameboardWrapper.classList.add("gameboard-wrapper");
     gameboardWrapper.id = player;
     battleScreen.appendChild(gameboardWrapper);
-    updatePveGameboard(player);
+    updateGameboard(player);
     updateShipsTracker(player);
   });
 }
 
-export function displayPveBattleWithShips(shipsCoordinates) {
+function displayBattleWithShips(shipsCoordinates) {
   startGame();
   placeShips(shipsCoordinates);
-  displayPveBattle();
+  displayBattle();
 }
 
-export function displayShipsLayoutScreen() {
+export default function displayShipsLayoutScreen() {
   container.innerHTML = "";
 
   const shipsLayoutScreen = document.createElement("section");
@@ -74,7 +74,7 @@ export function displayShipsLayoutScreen() {
         .getAttribute("data-ships-coordinates")
     );
 
-    displayPveBattleWithShips(shipsCoordinates);
+    displayBattleWithShips(shipsCoordinates);
   });
   buttons.appendChild(playButton);
 }
