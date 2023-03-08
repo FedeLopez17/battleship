@@ -9,7 +9,7 @@ export function displayGameOverScreen(winner) {
 
   const gameOverText = document.createElement("h1");
   gameOverScreen.appendChild(gameOverText);
-  gameOverText.innerText = `Game Over, you ${
+  gameOverText.innerText = `Game over, you ${
     winner === "player-one" ? "won!" : "lost"
   }`;
 
