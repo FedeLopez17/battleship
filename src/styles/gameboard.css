@@ -1,23 +1,23 @@
+:root {
+  --gameboard-width: min(90%, 500px);
+  --missed-attack-color: lightsteelblue;
+  --ship-color: steelblue;
+  --hit-ship-color: lightpink;
+  --sunk-ship-color: crimson;
+}
+
 .gameboard-wrapper {
   flex: 1;
   justify-content: center;
   align-items: center;
   display: flex;
-}
-
-.gameboard-wrapper#player-one {
-  background-color: pink;
-}
-
-.gameboard-wrapper#player-two {
-  background-color: blue;
+  gap: 10px;
 }
 
 .gameboard {
   aspect-ratio: 2/2;
-  width: min(90%, 500px);
+  width: var(--gameboard-width);
   display: flex;
-  background-color: white;
   pointer-events: none;
   transition: filter 500ms;
 }
@@ -31,9 +31,11 @@
 
 .gameboard .cell {
   flex: 1;
-  border: 1px solid grey;
+  outline: 1px solid midnightblue;
+  background-color: #f8f8ffed; /* slightly transparent ghostwhite*/
   pointer-events: auto;
   cursor: pointer;
+  margin: 2px;
 }
 
 .gameboard .cell:hover {
@@ -41,22 +43,29 @@
 }
 
 .gameboard .cell.ship {
-  background-color: skyblue;
+  background-color: var(--ship-color);
+}
+
+.gameboard .cell.hit,
+.gameboard .cell.sunk,
+.gameboard .cell.missed-attack {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
 }
 
 .gameboard .cell.hit {
-  background-color: hotpink;
-  pointer-events: none;
+  background-color: var(--hit-ship-color);
 }
 
 .gameboard .cell.sunk {
-  background-color: red;
-  pointer-events: none;
+  background-color: var(--sunk-ship-color);
 }
 
 .gameboard .cell.missed-attack {
-  background-color: grey;
-  pointer-events: none;
+  background-color: var(--missed-attack-color);
+  font-size: 0.4rem;
 }
 
 .gameboard.disabled {
@@ -69,17 +78,17 @@
   pointer-events: none;
 }
 
-.gameboard-wrapper .ships-tracker {
+.gameboard-wrapper .ships-tracker > .ships-wrapper {
   width: 100px;
   height: 100px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 10px;
 }
 
-.gameboard-wrapper#player-one .ships-tracker {
-  align-items: flex-end;
+.gameboard-wrapper#player-two .ships-tracker > .ships-wrapper {
+  align-items: flex-start;
 }
 
 .ships-tracker .ship {
@@ -90,9 +99,49 @@
 
 .ships-tracker .ship > .subdivision {
   flex: 1;
-  background-color: yellow;
+  background-color: var(--ship-color);
 }
 
 .ships-tracker .ship.sunk > .subdivision {
-  background-color: orange;
+  background-color: var(--sunk-ship-color);
+}
+
+@media (orientation: portrait) {
+  .gameboard-wrapper {
+    padding: 10% 0;
+  }
+}
+
+@media (max-width: 300px) {
+  .gameboard .cell {
+    margin: 1px;
+  }
+}
+
+@media (max-width: 1340px) {
+  .gameboard-wrapper#player-one {
+    flex-direction: column-reverse;
+  }
+
+  .gameboard-wrapper#player-two {
+    flex-direction: column;
+  }
+
+  .gameboard-wrapper .ships-tracker {
+    width: var(--gameboard-width);
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .gameboard-wrapper#player-two .ships-tracker {
+    justify-content: flex-end;
+  }
+
+  .gameboard-wrapper#player-one .ships-tracker > .ships-wrapper {
+    align-items: flex-start;
+  }
+
+  .gameboard-wrapper#player-two .ships-tracker > .ships-wrapper {
+    align-items: flex-end;
+  }
 }

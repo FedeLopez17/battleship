@@ -1,8 +1,54 @@
 body {
   margin: 0;
-  background-color: red;
+  position: relative;
+  background-image: linear-gradient(
+    180.4deg,
+    rgb(134 202 255) -2.2%,
+    #fffbf5 83.5%
+  );
 }
 
-#container {
-  height: 100vh;
+#waves-wrapper {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 5vh;
+  bottom: 0;
+  overflow-x: hidden;
+}
+
+#waves-wrapper > .wave {
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  width: 200%;
+  background-image: url("../images/wave.png");
+  background-size: 50% 100%;
+  opacity: 0.8;
+  animation: move_wave 5s infinite linear;
+}
+
+#waves-wrapper > .wave:nth-of-type(2) {
+  opacity: 0.5;
+  animation: move_wave 4s infinite linear;
+}
+
+#waves-wrapper > .wave:nth-of-type(3) {
+  opacity: 0.4;
+  animation: move_wave 7s infinite linear;
+}
+
+@keyframes move_wave {
+  0% {
+    transform: translateX(0);
+    height: 100%;
+  }
+  50% {
+    transform: translateX(-25%);
+    height: 55%;
+  }
+  100% {
+    transform: translateX(-50%) scaleY(1);
+    height: 100%;
+  }
 }

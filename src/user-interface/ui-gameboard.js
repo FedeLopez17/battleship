@@ -11,6 +11,9 @@ export function updateShipsTracker(player) {
 
   const shipTracker = document.createElement("section");
   shipTracker.classList.add("ships-tracker");
+  const shipsWrapper = document.createElement("section");
+  shipsWrapper.classList.add("ships-wrapper");
+  shipTracker.appendChild(shipsWrapper);
   gameState.gameboards[player].ships.forEach((ship) => {
     const uiShip = document.createElement("section");
     uiShip.classList.add("ship");
@@ -25,7 +28,7 @@ export function updateShipsTracker(player) {
       uiShipSubdivision.classList.add("subdivision");
       uiShip.appendChild(uiShipSubdivision);
     }
-    shipTracker.appendChild(uiShip);
+    shipsWrapper.appendChild(uiShip);
   });
 
   const gameboardWrapper = document.querySelector(
@@ -74,12 +77,12 @@ function updateGameboards() {
     return;
   }
 
-  const thinkingTime = randomIntegerInRange(600, 1000);
   const playerTwoGameboard = document.querySelector(
     ".gameboard-wrapper#player-two .gameboard"
   );
   playerTwoGameboard.classList.toggle("disabled");
 
+  const thinkingTime = randomIntegerInRange(600, 1000);
   setTimeout(() => {
     updateGameboard("player-one");
     updateShipsTracker("player-one");
@@ -106,10 +109,12 @@ export function updateGameboard(player) {
       // The ships must not be visible in the AI's gameboard
       if (!isAiGameboard) gameboardCell.classList.add("ship");
 
-      if (ship.isSunk()) {
-        gameboardCell.classList.add("sunk");
-      } else if (arrIncludesObj(ship.hitsTaken, coords)) {
-        gameboardCell.classList.add("hit");
+      if (ship.isSunk() || arrIncludesObj(ship.hitsTaken, coords)) {
+        gameboardCell.classList.add(ship.isSunk() ? "sunk" : "hit");
+
+        const xMark = document.createElement("i");
+        xMark.classList.add("fa-solid", "fa-xmark");
+        gameboardCell.appendChild(xMark);
       }
     }
   }
@@ -119,6 +124,10 @@ export function updateGameboard(player) {
       `[data-coordinates = "{x: ${missedAttack.x}, y: ${missedAttack.y}}"]`
     );
     gameboardCell.classList.add("missed-attack");
+
+    const dot = document.createElement("i");
+    dot.classList.add("fa-solid", "fa-circle");
+    gameboardCell.appendChild(dot);
   }
 
   if (isAiGameboard) {
