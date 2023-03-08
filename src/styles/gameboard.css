@@ -19,7 +19,7 @@
   width: var(--gameboard-width);
   display: flex;
   pointer-events: none;
-  transition: filter 500ms;
+  transition: filter 500ms, opacity 500ms;
 }
 
 .gameboard > .column {
@@ -72,6 +72,7 @@
   pointer-events: auto;
   cursor: wait;
   filter: brightness(0.9);
+  opacity: 0.5;
 }
 
 .gameboard.disabled .cell {
