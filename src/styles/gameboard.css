@@ -1,5 +1,5 @@
 :root {
-  --gameboard-width: min(90%, 500px);
+  --gameboard-width: min(90vmin, 500px);
   --missed-attack-color: lightsteelblue;
   --ship-color: steelblue;
   --hit-ship-color: lightpink;
