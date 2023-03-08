@@ -39,7 +39,7 @@
 }
 
 .gameboard .cell:hover {
-  background-color: rgb(210, 224, 230);
+  background-color: var(--missed-attack-color);
 }
 
 .gameboard .cell.ship {
