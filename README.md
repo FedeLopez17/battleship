@@ -37,3 +37,6 @@ I chose to forgo some of the more advanced components of the game I had original
 
 ## Vide demo:
 https://user-images.githubusercontent.com/95712292/223891581-83f0984d-a92c-41ac-9aa0-7a290943bca9.mp4
+
+## Potential improvements:
+ - Add sound effects.
