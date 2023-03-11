@@ -10,13 +10,15 @@ export default class Gameboard {
   }
 
   _setInitialEmptyCells() {
-    const emptyCells = [];
-    for (let x = 0; x < GAMEBOARD_WIDTH; x++) {
-      for (let y = 0; y < GAMEBOARD_HEIGHT; y++) {
-        emptyCells.push({ x, y });
-      }
-    }
-    return emptyCells;
+    return (
+      new Array(GAMEBOARD_WIDTH * GAMEBOARD_HEIGHT)
+        .fill(0)
+        // the first parameter won't be used, it's only included in order to access the second parameter, index
+        .map((_ignoredParameter, index) => ({
+          x: Math.floor(index / GAMEBOARD_WIDTH),
+          y: index % GAMEBOARD_WIDTH,
+        }))
+    );
   }
 
   ships = [];

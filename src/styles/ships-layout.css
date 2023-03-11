@@ -21,7 +21,7 @@
 }
 
 .screen#ships-layout .gameboard .cell:not(.ship):hover {
-  background-color: white;
+  background-color: var(--cells-background);
 }
 
 .screen#ships-layout input#name {
